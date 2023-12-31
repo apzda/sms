@@ -1,0 +1,11 @@
+### send
+POST http://localhost:38083/~smsService/send
+Content-Type: application/json
+X-Gsvc-Caller: gtw
+
+{
+    "template_id": "login",
+    "phone": [
+        "18049920019"
+    ]
+}
