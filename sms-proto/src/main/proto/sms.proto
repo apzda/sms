@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package apzda.sms;
+import "gsvc/ext.proto";
+import "buf/validate/validate.proto";
+
+option java_package = "com.apzda.cloud.sms.proto";
+option java_multiple_files = true;
+option java_outer_classname = "SmsProto";
+
+message Variable {
+  string name = 1 [(buf.validate.field).required = true];
+  string value = 2 [(buf.validate.field).required = true];
+}
+
+message SendReq {
+  string template_id = 1 [(buf.validate.field).required = true];
+  repeated string phone = 2 [(buf.validate.field).repeated.min_items = 1];
+  repeated Variable variable = 3;
+  optional bool sync = 4;
+  optional string vendor = 5;
+}
+
+message SendRes {
+  int32 err_code = 1;
+  optional string err_msg = 2;
+  optional int32 interval = 3;
+}
+
+message VerifyReq {
+  string template_id = 1 [(buf.validate.field).required = true];
+  repeated string phone = 2 [(buf.validate.field).repeated.min_items = 1];
+  repeated Variable variable = 3;
+}
+
+message Query {
+  optional string vendor = 1;
+  optional string template_id = 2;
+  optional string phone = 3;
+  optional string status = 4;
+  optional uint64 start_time = 5;
+  optional uint64 end_time = 6;
+  optional gsvc.Pager pager = 7;
+}
+
+message Log {
+
+}
+
+message QueryRes {
+  int32 err_code = 1;
+  optional string err_msg = 2;
+  repeated Log log = 3;
+  gsvc.PageInfo page_info = 4;
+}
+
+service SmsService {
+  rpc send(SendReq) returns(SendRes);
+  rpc verify(VerifyReq) returns (gsvc.CommonRes);
+  rpc logs(Query) returns(QueryRes);
+}

@@ -1,0 +1,61 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: it
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        java: [ '17','21' ]
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+      mysql:
+        image: mysql:8.0.35
+        ports:
+          - 3307:3306
+        env:
+          MYSQL_ROOT_PASSWORD: Abc12332!
+          MYSQL_DATABASE: demo_db
+
+    env:
+      SERVER_PORT_NO: 38083
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B -P+it package -Dskip.container=yes -Djava.version=${{ matrix.java }} --file pom.xml
+      - name: Run Application
+        uses: JarvusInnovations/background-action@v1
+        with:
+          working-directory: sms-service
+          wait-for: 2m
+          tail: true
+          run: java -jar target/sms-service-fat.jar --spring.profiles.active=sms-dev &
+          wait-on: http-get://localhost:${{ env.SERVER_PORT_NO }}/actuator/health
+      - name: Download ijhttp tools
+        run: |-
+          curl -f -L -o ijhttp.zip "https://jb.gg/ijhttp/latest"
+          unzip ijhttp.zip
+          ./ijhttp/ijhttp --version
+      - name: Execute HTTP requests
+        run: ./ijhttp/ijhttp sms-service/src/test/http/it.http
