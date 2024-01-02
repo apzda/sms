@@ -23,7 +23,6 @@ import com.apzda.cloud.sms.dto.Sms;
 import com.apzda.cloud.sms.event.SmsEvent;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 
@@ -61,33 +60,33 @@ public class ThreadPoolSender implements SmsSender, ThreadFactory {
     }
 
     @Override
-    public void send(@NonNull String phone, @NonNull Sms sms, @NonNull final ApplicationEventPublisher publisher) {
-        val vendor = StringUtils.defaultIfBlank(sms.getVendor(), "default");
+    public void send(@NonNull Sms sms, @NonNull final ApplicationEventPublisher publisher) {
+        val phone = sms.getPhone();
+        val vendor = sms.getVendor();
         val smsProvider = enabledSmsProviders.get(vendor);
         if (smsProvider == null) {
             log.warn("Sms Vendor({}) is not available", vendor);
-            publisher.publishEvent(new SmsEvent(phone, sms, false,
+            publisher.publishEvent(new SmsEvent(sms, false,
                     new IllegalStateException(String.format("Sms Vendor(%s) is not available", vendor))));
             return;
         }
         if (sms.isSync()) {
             try {
-                val event = new SmsEvent(phone, sms, smsProvider.send(phone, sms), null);
-                publisher.publishEvent(event);
+                publisher.publishEvent(new SmsEvent(sms, smsProvider.send(sms), null));
             }
             catch (Exception e) {
                 log.warn("Cannot send sms ({}) to {}", sms, phone);
-                publisher.publishEvent(new SmsEvent(phone, sms, e));
+                publisher.publishEvent(new SmsEvent(sms, e));
             }
         }
         else {
             sender.submit(() -> {
                 try {
-                    publisher.publishEvent(new SmsEvent(phone, sms, smsProvider.send(phone, sms), null));
+                    publisher.publishEvent(new SmsEvent(sms, smsProvider.send(sms), null));
                 }
                 catch (Exception e) {
-                    log.warn("Cannot send sms ({}) to {}", sms, phone);
-                    publisher.publishEvent(new SmsEvent(phone, sms, e));
+                    log.warn("Cannot send sms ({}) to {} - {}", sms, phone, e.getMessage());
+                    publisher.publishEvent(new SmsEvent(sms, e));
                 }
             });
         }

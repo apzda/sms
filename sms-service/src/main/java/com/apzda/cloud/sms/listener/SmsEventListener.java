@@ -16,8 +16,13 @@
  */
 package com.apzda.cloud.sms.listener;
 
+import cn.hutool.core.date.DateUtil;
+import com.apzda.cloud.sms.domain.SmsStatus;
+import com.apzda.cloud.sms.domain.repository.SmsLogRepository;
 import com.apzda.cloud.sms.event.SmsEvent;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.NonNull;
 
@@ -27,11 +32,28 @@ import org.springframework.lang.NonNull;
  * @since 1.0.0
  **/
 @Slf4j
+@RequiredArgsConstructor
 public class SmsEventListener implements ApplicationListener<SmsEvent> {
+
+    private final SmsLogRepository smsLogRepository;
 
     @Override
     public void onApplicationEvent(@NonNull SmsEvent event) {
-        log.info("sms sent = {}", event);
+        val source = event.getSms();
+        val smsLogId = source.getSmsLogId();
+        if (smsLogId != null) {
+            val smsLog = smsLogRepository.findById(smsLogId);
+            if (smsLog.isPresent()) {
+                val sms = smsLog.get();
+                sms.setSentTime(DateUtil.currentSeconds());
+                sms.setStatus(event.isSuccess() ? SmsStatus.SENT : SmsStatus.FAILED);
+                val exception = event.getException();
+                if (exception != null) {
+                    sms.setError(exception.getMessage());
+                }
+                smsLogRepository.save(sms);
+            }
+        }
     }
 
 }

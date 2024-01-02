@@ -18,8 +18,10 @@ package com.apzda.cloud.sms.config;
 
 import cn.hutool.core.util.ServiceLoaderUtil;
 import com.apzda.cloud.gsvc.config.Props;
+import com.apzda.cloud.gsvc.i18n.MessageSourceNameResolver;
 import com.apzda.cloud.sms.SmsProvider;
 import com.apzda.cloud.sms.SmsSender;
+import com.apzda.cloud.sms.domain.repository.SmsLogRepository;
 import com.apzda.cloud.sms.listener.SmsEventListener;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,8 @@ public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
 
     private final Map<String, SmsProvider> enabledSmsProviders = new HashMap<>();
 
+    private final Map<String, ProviderProperties> providerProperties = new HashMap<>();
+
     private SmsSender smsSender;
 
     private SmsProvider smsProvider;
@@ -69,10 +73,8 @@ public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
             throw new Exception("No Sms Provider specified!");
         }
 
-        val providersMap = new HashMap<String, ProviderProperties>();
-
         val enabledProviders = providers.stream().filter(ProviderProperties::isEnabled).peek(ep -> {
-            providersMap.put(ep.getId(), ep);
+            providerProperties.put(ep.getId(), ep);
         }).toList();
 
         if (enabledProviders.isEmpty()) {
@@ -90,10 +92,11 @@ public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
 
         for (SmsProvider provider : smsProviders) {
             val pid = provider.getId();
-            if (providersMap.containsKey(pid)) {
-                provider.init(providersMap.get(pid));
+            if (providerProperties.containsKey(pid)) {
+                provider.init(providerProperties.get(pid));
                 enabledSmsProviders.put(pid, provider);
             }
+
             if (defaultProvider.equals(pid)) {
                 smsProvider = provider;
                 enabledSmsProviders.put("default", smsProvider);
@@ -116,11 +119,17 @@ public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
         else {
             throw new Exception("Sms Sender '" + sender + "' not found in class path!");
         }
+
+    }
+
+    @Bean("sms.MessageSourceNameResolver")
+    MessageSourceNameResolver messageSourceNameResolver() {
+        return () -> "messages-sms";
     }
 
     @Bean
-    SmsEventListener smsEventListener() {
-        return new SmsEventListener();
+    SmsEventListener smsEventListener(SmsLogRepository smsLogRepository) {
+        return new SmsEventListener(smsLogRepository);
     }
 
     @Override

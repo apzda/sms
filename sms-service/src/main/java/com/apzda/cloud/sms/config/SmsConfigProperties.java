@@ -34,6 +34,11 @@ import java.util.Map;
 public class SmsConfigProperties {
 
     /**
+     * 每个手机每天最大短信量
+     */
+    private int maxCount = 100;
+
+    /**
      * 短信发送器
      */
     private String sender = "default";

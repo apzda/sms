@@ -23,10 +23,16 @@ apzda:
   cloud:
     sms:
       providers:
-        - id: dayu
-          access-key: 123456
+        - id: test
+          templates:
+            login:
+              template-id: "1234"
       props:
         thread: 2
+      templates:
+        login:
+          interval: 60s
+          timeout: 15m
 
 logging:
   level:

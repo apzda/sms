@@ -10,7 +10,7 @@ CREATE TABLE `apzda_sms_log`
     `tid`       VARCHAR(64)                                NOT NULL COMMENT 'Template ID',
     `phone`     VARCHAR(11)                                NOT NULL COMMENT 'phone number',
     `vendor`    VARCHAR(16)                                NOT NULL COMMENT 'Sms Vendor Id',
-    `status`    enum ('pending','sending','sent','failed') NOT NULL DEFAULT 'pending' COMMENT 'Status of sending',
+    `status`    enum ('PENDING','SENDING','SENT','FAILED') NOT NULL DEFAULT 'PENDING' COMMENT 'Status of sending',
     `sent_time` BIGINT UNSIGNED                            NULL COMMENT 'SENT TIME',
     `retried`   INTEGER UNSIGNED                           NOT NULL DEFAULT 0 COMMENT 'retry counts',
     `intervals` SMALLINT UNSIGNED                          NOT NULL COMMENT 'Sending intervals',

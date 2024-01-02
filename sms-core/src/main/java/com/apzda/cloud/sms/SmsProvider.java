@@ -30,6 +30,6 @@ public interface SmsProvider {
 
     void init(ProviderProperties props) throws Exception;
 
-    boolean send(String phone, Sms sms) throws Exception;
+    boolean send(Sms sms) throws Exception;
 
 }

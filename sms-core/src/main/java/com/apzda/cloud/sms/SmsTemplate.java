@@ -16,27 +16,119 @@
  */
 package com.apzda.cloud.sms;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import com.apzda.cloud.gsvc.infra.TempStorage;
 import com.apzda.cloud.sms.config.TemplateProperties;
+import com.apzda.cloud.sms.data.SmsInfo;
 import com.apzda.cloud.sms.dto.Sms;
 import com.apzda.cloud.sms.dto.Variable;
+import com.apzda.cloud.sms.exception.TooManySmsException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author fengz (windywany@gmail.com)
  * @version 1.0.0
  * @since 1.0.0
  **/
-public interface SmsTemplate {
 
-    String getId();
+@RequiredArgsConstructor
+@Getter
+public class SmsTemplate {
 
-    void onCreate(TemplateProperties properties);
+    protected final String id;
 
-    void onSent(String phone, Sms sms);
+    protected TemplateProperties properties;
 
-    default boolean verify(String phone, List<Variable> variable) {
-        return true;
+    public Sms create(String phone, List<Variable> variables) {
+        val sms = new Sms();
+        sms.setTid(id);
+        sms.setPhone(phone);
+        sms.setTemplateId(properties.getTemplateId());
+        val interval = properties.getInterval();
+        if (interval != null) {
+            sms.setIntervals((int) interval.toSeconds());
+        }
+        val timeout = properties.getTimeout();
+        if (timeout != null) {
+            sms.setTimeout((int) timeout.toSeconds());
+        }
+        sms.setSignName(properties.getSignName());
+        sms.setVariables(variables);
+        val content = properties.getContent();
+        if (StringUtils.isNotBlank(content) && !CollectionUtils.isEmpty(variables)) {
+            sms.setContent(parseContent(content, variables));
+        }
+        return sms;
+    }
+
+    public String parseContent(String content, List<Variable> variables) {
+        for (Variable variable : variables) {
+            content = content.replace("${" + variable.getName() + "}", variable.getValue());
+        }
+        return content;
+    }
+
+    public void beforeSend(Sms sms, TempStorage storage) throws Exception {
+        val phone = sms.getPhone();
+        val intervals = sms.getIntervals();//
+        val id = genId(phone);
+        val info = storage.load(id, SmsInfo.class);
+        if (info.isPresent()) {
+            val smsInfo = info.get();
+            val sentTime = smsInfo.getSentTime();
+            if ((System.currentTimeMillis() / 1000 - intervals < sentTime)) {
+                // 发送太快
+                throw new TooManySmsException();
+            }
+        }
+    }
+
+    public void onSent(Sms sms, TempStorage storage) throws Exception {
+        val phone = sms.getPhone();
+        val smsInfo = new SmsInfo();
+        smsInfo.setExpireTime(Duration.ofSeconds(sms.getTimeout()));
+        smsInfo.setSentTime(System.currentTimeMillis() / 1000);
+        smsInfo.setVariables(sms.getVariables());
+        storage.save(genId(phone), smsInfo);
+    }
+
+    public boolean verify(Sms sms, TempStorage storage) {
+        val phone = sms.getPhone();
+        val id = genId(phone);
+        val info = storage.load(id, SmsInfo.class);
+        if (info.isPresent()) {
+            val smsInfo = info.get();
+            val variables = smsInfo.getVariables();
+            if (!CollectionUtils.isEmpty(variables)) {
+                if (Objects.equals(variables, sms.getVariables())) {
+                    storage.remove(id);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public String genId(String phone) {
+        return "sms." + phone + "." + id;
+    }
+
+    public void setProperties(TemplateProperties properties) {
+        if (this.properties == null) {
+            this.properties = properties;
+        }
+        else {
+            BeanUtil.copyProperties(properties, this.properties, CopyOptions.create().ignoreNullValue());
+        }
     }
 
 }

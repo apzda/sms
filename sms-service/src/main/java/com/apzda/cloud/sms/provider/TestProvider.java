@@ -19,12 +19,14 @@ package com.apzda.cloud.sms.provider;
 import com.apzda.cloud.sms.SmsProvider;
 import com.apzda.cloud.sms.config.ProviderProperties;
 import com.apzda.cloud.sms.dto.Sms;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author fengz (windywany@gmail.com)
  * @version 1.0.0
  * @since 1.0.0
  **/
+@Slf4j
 public class TestProvider implements SmsProvider {
 
     @Override
@@ -34,11 +36,11 @@ public class TestProvider implements SmsProvider {
 
     @Override
     public void init(ProviderProperties props) throws Exception {
-
     }
 
     @Override
-    public boolean send(String phone, Sms sms) throws Exception {
+    public boolean send(Sms sms) throws Exception {
+        log.debug("Send Sms: {}", sms);
         return true;
     }
 

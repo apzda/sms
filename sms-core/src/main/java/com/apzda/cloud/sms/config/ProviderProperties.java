@@ -16,10 +16,14 @@
  */
 package com.apzda.cloud.sms.config;
 
+import com.apzda.cloud.sms.SmsTemplate;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NonNull;
+import lombok.val;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -29,6 +33,8 @@ import java.util.Map;
  **/
 @Data
 public class ProviderProperties {
+
+    private static final Map<String, SmsTemplate> TEMPLATES = new HashMap<>();
 
     @NotBlank
     private String id;
@@ -43,8 +49,36 @@ public class ProviderProperties {
 
     private String endpoint;
 
+    private String regionId;
+
+    private String signName;
+
     private boolean enabled = true;
 
+    private final Map<String, TemplateProperties> templates = new HashMap<>();
+
     private final Map<String, String> props = new HashMap<>();
+
+    @NonNull
+    public synchronized Map<String, SmsTemplate> templates(Map<String, TemplateProperties> globalProperties) {
+        if (TEMPLATES.isEmpty()) {
+            val templateIds = new HashSet<String>();
+            templateIds.addAll(templates.keySet());
+            templateIds.addAll(globalProperties.keySet());
+            for (String tid : templateIds) {
+                val gtp = globalProperties.get(tid);
+                val tp = templates.get(tid);
+                val template = new SmsTemplate(tid);
+                if (gtp != null) {
+                    template.setProperties(gtp);
+                }
+                if (tp != null) {
+                    template.setProperties(tp);
+                }
+                TEMPLATES.put(tid, template);
+            }
+        }
+        return TEMPLATES;
+    }
 
 }

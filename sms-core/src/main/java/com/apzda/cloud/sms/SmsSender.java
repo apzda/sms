@@ -32,7 +32,7 @@ public interface SmsSender {
 
     void init(Props props, Map<String, SmsProvider> enabledSmsProviders) throws Exception;
 
-    void send(@NonNull String phones, @NonNull Sms sms, @NonNull ApplicationEventPublisher publisher);
+    void send(@NonNull Sms sms, @NonNull ApplicationEventPublisher publisher);
 
     String getId();
 

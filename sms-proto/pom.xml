@@ -10,12 +10,7 @@
     </parent>
 
     <artifactId>sms-proto</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>com.apzda.cloud</groupId>
-            <artifactId>sms-core</artifactId>
-        </dependency>
-    </dependencies>
+
     <build>
         <plugins>
             <plugin>

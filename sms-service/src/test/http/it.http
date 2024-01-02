@@ -4,8 +4,90 @@ Content-Type: application/json
 X-Gsvc-Caller: gtw
 
 {
-    "template_id": "login",
+    "tid": "login",
     "phone": [
-        "18049920019"
+        "16049910022"
+    ],
+    "variable": [
+        {
+            "name": "code",
+            "value": "123456"
+        }
     ]
 }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.errCode === 0, "")
+    });
+%}
+
+### verify - error
+POST http://localhost:38083/~smsService/verify
+Content-Type: application/json
+X-Gsvc-Caller: gtw
+
+{
+    "phone": "16049910022",
+    "tid": "login",
+    "variable": [
+        {
+            "name": "code",
+            "value": "123458"
+        }
+    ]
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.errCode === 1, "")
+    });
+%}
+
+### verify
+POST http://localhost:38083/~smsService/verify
+Content-Type: application/json
+X-Gsvc-Caller: gtw
+
+{
+    "phone": "16049910022",
+    "tid": "login",
+    "variable": [
+        {
+            "name": "code",
+            "value": "123456"
+        }
+    ]
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.errCode === 0, "")
+    });
+%}
+
+### verify - agin
+POST http://localhost:38083/~smsService/verify
+Content-Type: application/json
+X-Gsvc-Caller: gtw
+
+{
+    "phone": "16049910022",
+    "tid": "login",
+    "variable": [
+        {
+            "name": "code",
+            "value": "123456"
+        }
+    ]
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.errCode === 1, "")
+    });
+%}

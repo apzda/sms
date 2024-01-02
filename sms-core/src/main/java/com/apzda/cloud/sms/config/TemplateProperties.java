@@ -35,28 +35,25 @@ public class TemplateProperties {
      */
     private String templateId;
 
+    private String signName;
+
     /**
      * 发送间隔
      */
     @DurationUnit(ChronoUnit.SECONDS)
-    private Duration interval = Duration.ofMinutes(1);
+    private Duration interval;
 
     /**
      * 有效期
      */
     @DurationUnit(ChronoUnit.MINUTES)
-    private Duration timeout = Duration.ofMinutes(30);
+    private Duration timeout;
 
-    /**
-     * 最大重试次数
-     */
-    private int maxRetries = 0;
+    private Integer countM = 1;
 
-    /**
-     * 重试间隔
-     */
-    @DurationUnit(ChronoUnit.SECONDS)
-    private Duration retryInterval = Duration.ofSeconds(10);
+    private Integer countH = 5;
+
+    private Integer countD = 10;
 
     /**
      * 短信正文

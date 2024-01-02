@@ -16,15 +16,41 @@
  */
 package com.apzda.cloud.sms.dto;
 
+import cn.hutool.json.JSONUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author fengz (windywany@gmail.com)
  * @version 1.0.0
  * @since 1.0.0
  **/
+@Data
+@EqualsAndHashCode(of = { "name", "value" })
+@AllArgsConstructor
+@NoArgsConstructor
 public class Variable {
 
     private String name;
 
     private String value;
+
+    public static String toJsonStr(List<Variable> variables) {
+        if (CollectionUtils.isEmpty(variables)) {
+            return "";
+        }
+        Map<String, String> params = new HashMap<>();
+        for (Variable variable : variables) {
+            params.put(variable.getName(), variable.getValue());
+        }
+        return JSONUtil.toJsonStr(params);
+    }
 
 }

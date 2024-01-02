@@ -30,12 +30,58 @@ public class Sms {
 
     private Long smsLogId;
 
+    /**
+     * 业务ID
+     */
+    private String tid;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 运营商处短信模板ID
+     */
     private String templateId;
 
+    /**
+     * 签名
+     */
+    private String signName;
+
+    /**
+     * 短信提供商
+     */
     private String vendor;
 
+    /**
+     * 是否同步发送
+     */
     private boolean sync;
 
+    /**
+     * 变量
+     */
     private List<Variable> variables;
+
+    /**
+     * 短信正文
+     */
+    private String content;
+
+    /**
+     * 发送间隔，单位: 秒
+     */
+    private int intervals;
+
+    /**
+     * 有效期，单位: 秒
+     */
+    private int timeout;
+
+    public int getIntervals() {
+        return Math.max(30, intervals);
+    }
 
 }

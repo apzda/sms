@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2023 Fengz Ning (windywany@gmail.com)
+ * Copyright (C) 2023-2024 Fengz Ning (windywany@gmail.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,39 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.apzda.cloud.sms.event;
+package com.apzda.cloud.sms.exception;
 
-import com.apzda.cloud.sms.dto.Sms;
-import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
+import com.apzda.cloud.gsvc.exception.NoStackLogError;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.ErrorResponseException;
 
 /**
  * @author fengz (windywany@gmail.com)
  * @version 1.0.0
  * @since 1.0.0
  **/
-@Getter
-public class SmsEvent extends ApplicationEvent {
+public class TooManySmsException extends ErrorResponseException implements NoStackLogError {
 
-    private final boolean success;
-
-    private final Sms sms;
-
-    private final Throwable exception;
-
-    public SmsEvent(Sms sms, Throwable exception) {
-        this(sms, false, exception);
+    public TooManySmsException() {
+        super(HttpStatus.TOO_MANY_REQUESTS);
     }
 
-    public SmsEvent(Sms sms) {
-        this(sms, true, null);
-    }
-
-    public SmsEvent(Sms sms, boolean success, Throwable exception) {
-        super(sms);
-        this.sms = sms;
-        this.success = success;
-        this.exception = exception;
+    public TooManySmsException(Throwable e) {
+        super(HttpStatus.TOO_MANY_REQUESTS, e);
     }
 
 }
