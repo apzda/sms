@@ -77,6 +77,7 @@ public class ProviderProperties {
                 if (tp != null) {
                     template.setProperties(tp);
                 }
+                template.setSignName(signName);
                 TEMPLATES.put(tid, template);
             }
         }

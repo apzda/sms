@@ -135,4 +135,10 @@ public class SmsTemplate {
         }
     }
 
+    public void setSignName(String signName) {
+        if (StringUtils.isNotBlank(signName) && StringUtils.isBlank(this.getProperties().getSignName())) {
+            this.getProperties().setSignName(signName);
+        }
+    }
+
 }
