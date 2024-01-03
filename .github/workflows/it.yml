@@ -27,7 +27,7 @@ jobs:
           - 3307:3306
         env:
           MYSQL_ROOT_PASSWORD: Abc12332!
-          MYSQL_DATABASE: demo_db
+          MYSQL_DATABASE: apzda_infra_db
 
     env:
       SERVER_PORT_NO: 38083
