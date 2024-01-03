@@ -17,6 +17,7 @@
 package com.apzda.cloud.sms.domain.repository;
 
 import com.apzda.cloud.sms.domain.entity.SmsLog;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Repository;
  * @since 1.0.0
  **/
 @Repository
-public interface SmsLogRepository extends PagingAndSortingRepository<SmsLog, Long>, CrudRepository<SmsLog, Long> {
+public interface SmsLogRepository extends PagingAndSortingRepository<SmsLog, Long>, JpaSpecificationExecutor<SmsLog>,
+        CrudRepository<SmsLog, Long> {
 
 }

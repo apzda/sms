@@ -63,6 +63,7 @@ public class SmsLog extends SnowflakeIdEntity implements AuditedEntity, Tenanted
 
     private Long sentTime;
 
+    @Builder.Default
     private int retried = 0;
 
     @JdbcTypeCode(SqlTypes.SMALLINT)

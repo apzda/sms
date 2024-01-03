@@ -16,6 +16,7 @@
  */
 package com.apzda.cloud.sms.facade;
 
+import com.apzda.cloud.gsvc.domain.Pager;
 import com.apzda.cloud.gsvc.ext.GsvcExt;
 import com.apzda.cloud.gsvc.infra.Counter;
 import com.apzda.cloud.gsvc.infra.TempStorage;
@@ -23,21 +24,29 @@ import com.apzda.cloud.gsvc.utils.I18nHelper;
 import com.apzda.cloud.sms.SmsProvider;
 import com.apzda.cloud.sms.SmsSender;
 import com.apzda.cloud.sms.SmsTemplate;
+import com.apzda.cloud.sms.config.ProviderProperties;
 import com.apzda.cloud.sms.config.SmsServiceConfig;
 import com.apzda.cloud.sms.config.TemplateProperties;
+import com.apzda.cloud.sms.domain.SmsStatus;
 import com.apzda.cloud.sms.domain.entity.SmsLog;
 import com.apzda.cloud.sms.domain.repository.SmsLogRepository;
 import com.apzda.cloud.sms.dto.Variable;
 import com.apzda.cloud.sms.exception.TooManySmsException;
 import com.apzda.cloud.sms.proto.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.Empty;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 
 /**
  * @author fengz (windywany@gmail.com)
@@ -54,6 +63,8 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
     private final SmsServiceConfig serviceConfig;
 
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final ObjectMapper objectMapper;
 
     private final TempStorage storage;
 
@@ -154,7 +165,69 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
 
     @Override
     public QueryRes logs(Query request) {
-        return null;
+        val pager = request.getPager();
+        val pr = Pager.of(pager);
+
+        val logs = smsLogRepository.findAll((Specification<SmsLog>) (root, query, builder) -> {
+            val cons = new ArrayList<Predicate>();
+            cons.add(builder.equal(root.<Boolean>get("deleted"), false));
+            if (request.hasPhone()) {
+                cons.add(builder.equal(root.<String>get("phone"), request.getPhone()));
+            }
+            if (request.hasVendor()) {
+                cons.add(builder.equal(root.<String>get("vendor"), request.getVendor()));
+            }
+            if (request.hasTid()) {
+                cons.add(builder.equal(root.<String>get("tid"), request.getTid()));
+            }
+            if (request.hasTenantId()) {
+                cons.add(builder.equal(root.<String>get("tenantId"), request.getTenantId()));
+            }
+            if (request.hasStatus()) {
+                cons.add(builder.equal(root.<String>get("status"), request.getStatus()));
+            }
+            if (request.hasStartTime()) {
+                cons.add(builder.ge(root.<Long>get("createTime"), request.getStartTime()));
+            }
+            if (request.hasEndTime()) {
+                cons.add(builder.lt(root.<Long>get("createTime"), request.getEndTime()));
+            }
+            return builder.and(cons.toArray(new Predicate[0]));
+        }, pr);
+
+        val pageInfo = Pager.of(logs);
+        val builder = QueryRes.newBuilder();
+        builder.setPager(pageInfo);
+        // ^_^
+        builder.addAllLogs(logs.getContent().stream().map((lg) -> objectMapper.convertValue(lg, Log.class)).toList());
+
+        return builder.build();
+    }
+
+    @Override
+    public ConfigRes config(Empty request) {
+        val builder = ConfigRes.newBuilder();
+        builder.setErrCode(0);
+        val enabledSmsProviders = serviceConfig.getProviderProperties();
+        for (ProviderProperties value : enabledSmsProviders.values()) {
+            val id = value.getId();
+            val name = StringUtils.defaultIfBlank(value.getName(), id);
+            builder.addVendors(com.apzda.cloud.sms.proto.Variable.newBuilder().setValue(name).setName(id));
+        }
+        val templates = serviceConfig.getProperties().getTemplates();
+        val tpl = enabledSmsProviders.get(vendor).templates(templates);
+        for (SmsTemplate value : tpl.values()) {
+            val id = value.getId();
+            val name = value.getName();
+            builder.addTemplates(com.apzda.cloud.sms.proto.Variable.newBuilder().setName(id).setValue(name));
+        }
+        for (SmsStatus value : SmsStatus.values()) {
+            val name = value.name();
+            builder.addStatus(com.apzda.cloud.sms.proto.Variable.newBuilder()
+                .setName(name)
+                .setValue(I18nHelper.t("sms.status." + name.toLowerCase(), name)));
+        }
+        return builder.build();
     }
 
     private void checkLimit(String phone, String tid, TemplateProperties properties) {

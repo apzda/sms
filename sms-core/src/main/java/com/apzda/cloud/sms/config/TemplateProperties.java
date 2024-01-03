@@ -35,6 +35,8 @@ public class TemplateProperties {
      */
     private String templateId;
 
+    private String name;
+
     private String signName;
 
     /**

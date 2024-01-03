@@ -24,9 +24,11 @@ apzda:
     sms:
       providers:
         - id: test
+          name: 测试的供应商
           templates:
             login:
               template-id: "1234"
+              name: 登录验证码
       props:
         thread: 2
       templates:

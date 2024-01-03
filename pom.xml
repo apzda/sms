@@ -6,7 +6,7 @@
     <parent>
         <artifactId>apzda-cloud-gsvc-parent</artifactId>
         <groupId>com.apzda.cloud</groupId>
-        <version>1.2.6-SNAPSHOT</version>
+        <version>1.2.7</version>
     </parent>
     <artifactId>sms</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -19,9 +19,6 @@
         <module>sms-core</module>
     </modules>
 
-    <properties>
-        <apzda.config.version>1.0.2</apzda.config.version>
-    </properties>
     <issueManagement>
         <system>Github Issue</system>
         <url>https://github.com/apzda/sms/issues</url>

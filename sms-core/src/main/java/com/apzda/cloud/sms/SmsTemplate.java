@@ -48,6 +48,10 @@ public class SmsTemplate {
 
     protected TemplateProperties properties;
 
+    public String getName() {
+        return StringUtils.defaultIfBlank(properties.getName(), id);
+    }
+
     public Sms create(String phone, List<Variable> variables) {
         val sms = new Sms();
         sms.setTid(id);

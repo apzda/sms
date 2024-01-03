@@ -39,6 +39,8 @@ public class ProviderProperties {
     @NotBlank
     private String id;
 
+    private String name;
+
     private String accessKey;
 
     private String secretKey;
