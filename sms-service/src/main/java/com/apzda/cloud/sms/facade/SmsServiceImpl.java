@@ -145,7 +145,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         val template = getSmsTemplate(templateId);
         if (template == null) {
             log.warn("Sms Template({}) is not available", templateId);
-            builder.setErrCode(1);
+            builder.setErrCode(3);
             builder.setErrMsg(I18nHelper.t("sms.template.not.found", new String[] { templateId }));
             return builder.build();
         }
@@ -157,7 +157,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             builder.setErrCode(0);
         }
         else {
-            builder.setErrCode(1);
+            builder.setErrCode(3);
             builder.setErrMsg(I18nHelper.t("sms.invalid"));
         }
         return builder.build();
@@ -234,23 +234,25 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         val ac = counter.count("sms.ld." + phone, Duration.ofDays(1).toSeconds());
         val pac = serviceConfig.getProperties().getMaxCount();
         if (ac > pac) {
-            throw new TooManySmsException();
+            throw new TooManySmsException(String.format("%s had send %d sms today, limit is %d", phone, ac, pac));
         }
-
         val dc = counter.count("sms.ld." + tid + "." + phone, Duration.ofDays(1).toSeconds());
-        val pdc = properties.getCountD();
+        val pdc = properties.theCountD();
         if (dc > pdc) {
-            throw new TooManySmsException();
+            throw new TooManySmsException(
+                    String.format("%s had send %d sms(%s) today, limit is %d", phone, dc, tid, pdc));
         }
         val hc = counter.count("sms.lh." + tid + "." + phone, Duration.ofHours(1).toSeconds());
-        val phc = properties.getCountH();
+        val phc = properties.theCountH();
         if (hc > phc) {
-            throw new TooManySmsException();
+            throw new TooManySmsException(
+                    String.format("%s had send %d sms(%s)/hour, limit is %d", phone, hc, tid, phc));
         }
         val mc = counter.count("sms.lm." + tid + "." + phone, 60);
-        val pmc = properties.getCountH();
+        val pmc = properties.theCountH();
         if (mc > pmc) {
-            throw new TooManySmsException();
+            throw new TooManySmsException(
+                    String.format("%s had send %d sms(%s)/minute, limit is %d", phone, mc, tid, pmc));
         }
     }
 

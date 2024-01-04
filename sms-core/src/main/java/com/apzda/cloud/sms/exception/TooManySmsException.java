@@ -27,8 +27,9 @@ import org.springframework.web.ErrorResponseException;
  **/
 public class TooManySmsException extends ErrorResponseException implements NoStackLogError {
 
-    public TooManySmsException() {
+    public TooManySmsException(String message) {
         super(HttpStatus.TOO_MANY_REQUESTS);
+        setDetail(message);
     }
 
     public TooManySmsException(Throwable e) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023-2023 Fengz Ning (windywany@gmail.com)
+ * Copyright (C) 2023-2024 Fengz Ning (windywany@gmail.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,21 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.apzda.cloud.sms.autoconfig;
+package com.apzda.cloud.sms.error;
 
-import com.apzda.cloud.sms.proto.SmsServiceGsvc;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import com.apzda.cloud.gsvc.IServiceError;
 
 /**
  * @author fengz (windywany@gmail.com)
  * @version 1.0.0
  * @since 1.0.0
  **/
-@AutoConfiguration
-@ComponentScan({ "com.apzda.cloud.sms.aop" })
-@Import({ SmsServiceGsvc.class })
-public class SmsAutoConfiguration {
+public class SmsError implements IServiceError {
+
+    @Override
+    public String message() {
+        return "";
+    }
+
+    @Override
+    public int code() {
+        return 3;
+    }
 
 }

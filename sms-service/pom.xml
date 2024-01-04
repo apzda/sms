@@ -16,8 +16,9 @@
         </dependency>
         <dependency>
             <groupId>com.apzda.cloud</groupId>
-            <artifactId>sms-proto</artifactId>
+            <artifactId>sms-client</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.apzda.cloud</groupId>
             <artifactId>apzda-cloud-gsvc-starter</artifactId>

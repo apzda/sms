@@ -18,6 +18,8 @@ package com.apzda.cloud.sms;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import com.apzda.cloud.gsvc.infra.TempStorage;
 import com.apzda.cloud.sms.config.TemplateProperties;
 import com.apzda.cloud.sms.data.SmsInfo;
@@ -32,7 +34,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author fengz (windywany@gmail.com)
@@ -89,9 +90,9 @@ public class SmsTemplate {
         if (info.isPresent()) {
             val smsInfo = info.get();
             val sentTime = smsInfo.getSentTime();
-            if ((System.currentTimeMillis() / 1000 - intervals < sentTime)) {
+            if ((DateUtil.currentSeconds() - intervals < sentTime)) {
                 // 发送太快
-                throw new TooManySmsException();
+                throw new TooManySmsException("too fast!");
             }
         }
     }
@@ -113,7 +114,7 @@ public class SmsTemplate {
             val smsInfo = info.get();
             val variables = smsInfo.getVariables();
             if (!CollectionUtils.isEmpty(variables)) {
-                if (Objects.equals(variables, sms.getVariables())) {
+                if (CollectionUtil.isEqualList(variables, sms.getVariables())) {
                     storage.remove(id);
                     return true;
                 }

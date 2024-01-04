@@ -35,6 +35,9 @@ apzda:
         login:
           interval: 60s
           timeout: 15m
+          count-d: 1000
+          count-h: 100
+          count-m: 10
 
 logging:
   level:

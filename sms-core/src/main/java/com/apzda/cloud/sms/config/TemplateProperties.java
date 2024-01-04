@@ -51,15 +51,27 @@ public class TemplateProperties {
     @DurationUnit(ChronoUnit.MINUTES)
     private Duration timeout;
 
-    private Integer countM = 1;
+    private Integer countM;
 
-    private Integer countH = 5;
+    private Integer countH;
 
-    private Integer countD = 10;
+    private Integer countD;
 
     /**
      * 短信正文
      */
     private String content;
+
+    public Integer theCountM() {
+        return countM == null ? 1 : countM;
+    }
+
+    public Integer theCountH() {
+        return countH == null ? 10 : countH;
+    }
+
+    public Integer theCountD() {
+        return countD == null ? 15 : countD;
+    }
 
 }
