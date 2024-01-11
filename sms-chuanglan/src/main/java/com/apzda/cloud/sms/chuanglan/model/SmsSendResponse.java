@@ -14,18 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.apzda.cloud.sms.dto;
+package com.apzda.cloud.sms.chuanglan.model;
 
-import cn.hutool.json.JSONUtil;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.springframework.util.CollectionUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author fengz (windywany@gmail.com)
@@ -33,26 +24,41 @@ import java.util.Map;
  * @since 1.0.0
  **/
 @Data
-@EqualsAndHashCode(of = { "name", "value" })
-@AllArgsConstructor
-@NoArgsConstructor
-public class Variable {
+public class SmsSendResponse {
 
-    private String name;
+    /**
+     * 响应时间
+     */
+    private String time;
 
-    private String value;
+    /**
+     * 消息id
+     */
+    private String msgId;
 
-    private int index;
+    /**
+     * 状态码说明（成功返回空）
+     */
+    private String errorMsg;
 
-    public static String toJsonStr(List<Variable> variables) {
-        if (CollectionUtils.isEmpty(variables)) {
-            return "";
-        }
-        Map<String, String> params = new HashMap<>();
-        for (Variable variable : variables) {
-            params.put(variable.getName(), variable.getValue());
-        }
-        return JSONUtil.toJsonStr(params);
+    /**
+     * 失败的个数
+     */
+    private String failNum;
+
+    /**
+     * 成功的个数
+     */
+    private String successNum;
+
+    /**
+     * 状态码（详细参考提交响应状态码）
+     */
+    private String code;
+
+    @Override
+    public String toString() {
+        return "SmsSendResponse [time=" + time + ", msgId=" + msgId + ", errorMsg=" + errorMsg + ", code=" + code + "]";
     }
 
 }

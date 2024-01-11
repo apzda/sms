@@ -12,6 +12,7 @@ option java_outer_classname = "SmsProto";
 message Variable {
   string name = 1 [(buf.validate.field).required = true];
   string value = 2 [(buf.validate.field).required = true];
+  uint32 index = 3;
 }
 
 message SendReq {

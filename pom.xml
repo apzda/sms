@@ -15,6 +15,7 @@
         <module>sms-client</module>
         <module>sms-dayu</module>
         <module>sms-core</module>
+        <module>sms-chuanglan</module>
     </modules>
 
     <issueManagement>
@@ -89,6 +90,11 @@
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-dayu</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.apzda.cloud</groupId>
+                <artifactId>sms-chuanglan</artifactId>
                 <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>

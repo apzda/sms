@@ -17,7 +17,9 @@
 package com.apzda.cloud.sms.dto;
 
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,8 +82,14 @@ public class Sms {
      */
     private int timeout;
 
+    private String original;
+
     public int getIntervals() {
         return Math.max(30, intervals);
+    }
+
+    public List<Variable> getVariables() {
+        return CollectionUtils.isEmpty(variables) ? new ArrayList<>() : variables;
     }
 
 }

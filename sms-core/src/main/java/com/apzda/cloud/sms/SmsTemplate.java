@@ -69,6 +69,7 @@ public class SmsTemplate {
         sms.setSignName(properties.getSignName());
         sms.setVariables(variables);
         val content = properties.getContent();
+        sms.setOriginal(content);
         if (StringUtils.isNotBlank(content) && !CollectionUtils.isEmpty(variables)) {
             sms.setContent(parseContent(content, variables));
         }
@@ -78,6 +79,9 @@ public class SmsTemplate {
     public String parseContent(String content, List<Variable> variables) {
         for (Variable variable : variables) {
             content = content.replace("${" + variable.getName() + "}", variable.getValue());
+        }
+        for (Variable variable : variables) {
+            content = content.replace("{" + variable.getName() + "}", variable.getValue());
         }
         return content;
     }

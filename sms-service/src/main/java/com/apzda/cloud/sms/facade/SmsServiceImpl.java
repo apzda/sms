@@ -101,7 +101,9 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             return builder.build();
         }
 
-        val params = variables.stream().map(variable -> new Variable(variable.getName(), variable.getValue())).toList();
+        val params = variables.stream()
+            .map(variable -> new Variable(variable.getName(), variable.getValue(), variable.getIndex()))
+            .toList();
 
         for (String phone : phones) {
             try {
@@ -150,7 +152,9 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             return builder.build();
         }
 
-        val params = variables.stream().map(variable -> new Variable(variable.getName(), variable.getValue())).toList();
+        val params = variables.stream()
+            .map(variable -> new Variable(variable.getName(), variable.getValue(), variable.getIndex()))
+            .toList();
 
         val sms = template.create(phone, params);
         if (template.verify(sms, storage)) {
