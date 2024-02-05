@@ -16,6 +16,7 @@
         <module>sms-dayu</module>
         <module>sms-core</module>
         <module>sms-chuanglan</module>
+        <module>sms-server</module>
     </modules>
 
     <issueManagement>

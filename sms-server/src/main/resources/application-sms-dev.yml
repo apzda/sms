@@ -3,8 +3,6 @@ server.port: 38083
 spring:
   application:
     name: sms-service
-  config:
-    import: classpath:flyway.yml
   data:
     redis:
       database: 0

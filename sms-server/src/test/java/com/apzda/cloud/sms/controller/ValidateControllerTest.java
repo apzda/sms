@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  **/
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(properties = "logging.level.com.apzda.cloud.sms=trace")
-@ActiveProfiles("sms-dev")
+@ActiveProfiles({ "sms-dev", "flyway" })
 class ValidateControllerTest {
 
     @Autowired
