@@ -11,8 +11,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
+            <groupId>com.apzda.cloud</groupId>
+            <artifactId>apzda-cloud-gsvc-core</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

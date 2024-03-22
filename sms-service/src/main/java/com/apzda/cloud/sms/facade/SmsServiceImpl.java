@@ -16,7 +16,7 @@
  */
 package com.apzda.cloud.sms.facade;
 
-import com.apzda.cloud.gsvc.domain.Pager;
+import com.apzda.cloud.gsvc.domain.PagerUtils;
 import com.apzda.cloud.gsvc.ext.GsvcExt;
 import com.apzda.cloud.gsvc.infra.Counter;
 import com.apzda.cloud.gsvc.infra.TempStorage;
@@ -170,7 +170,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
     @Override
     public QueryRes logs(Query request) {
         val pager = request.getPager();
-        val pr = Pager.of(pager);
+        val pr = PagerUtils.of(pager);
 
         val logs = smsLogRepository.findAll((Specification<SmsLog>) (root, query, builder) -> {
             val cons = new ArrayList<Predicate>();
@@ -199,7 +199,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             return builder.and(cons.toArray(new Predicate[0]));
         }, pr);
 
-        val pageInfo = Pager.of(logs);
+        val pageInfo = PagerUtils.of(logs);
         val builder = QueryRes.newBuilder();
         builder.setPager(pageInfo);
         // ^_^

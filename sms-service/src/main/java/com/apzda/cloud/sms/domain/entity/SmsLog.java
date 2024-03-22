@@ -16,7 +16,10 @@
  */
 package com.apzda.cloud.sms.domain.entity;
 
-import com.apzda.cloud.gsvc.domain.*;
+import com.apzda.cloud.gsvc.domain.AuditingEntityListener;
+import com.apzda.cloud.gsvc.model.Auditable;
+import com.apzda.cloud.gsvc.model.SoftDeletable;
+import com.apzda.cloud.gsvc.model.Tenantable;
 import com.apzda.cloud.sms.domain.SmsStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,8 +39,12 @@ import org.hibernate.type.SqlTypes;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@EntityListeners(AutoMetaListener.class)
-public class SmsLog extends SnowflakeIdEntity implements AuditedEntity, TenantedEntity, SoftDeletedEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class SmsLog implements Auditable<Long, String, Long>, Tenantable<String>, SoftDeletable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     private Long createdAt;
 
