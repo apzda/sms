@@ -17,6 +17,15 @@
 package com.apzda.cloud.sms;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.utility.DockerImageName;
+
+import java.time.Duration;
 
 /**
  * @author fengz (windywany@gmail.com)
@@ -25,5 +34,27 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  **/
 @SpringBootApplication
 public class TestApp {
+
+    @TestConfiguration(proxyBeanMethods = false)
+    @ConditionalOnProperty(name = "skip.container", havingValue = "no", matchIfMissing = true)
+    static class TestConfig {
+
+        @Bean
+        @ServiceConnection(name = "redis")
+        GenericContainer<?> redis() {
+            return new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379)
+                .withStartupTimeout(Duration.ofMinutes(3));
+        }
+
+        @Bean
+        @ServiceConnection
+        MySQLContainer<?> mysql() {
+            return new MySQLContainer<>(DockerImageName.parse("mysql:8.0.35")).withDatabaseName("apzda_infra_db")
+                .withUsername("root")
+                .withPassword("Abc12332!")
+                .withStartupTimeout(Duration.ofMinutes(3));
+        }
+
+    }
 
 }

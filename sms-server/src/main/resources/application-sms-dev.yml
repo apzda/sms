@@ -16,6 +16,8 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: validate
+  flyway:
+    baseline-on-migrate: true
 
 apzda:
   cloud:

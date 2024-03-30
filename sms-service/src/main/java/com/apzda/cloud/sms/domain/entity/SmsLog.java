@@ -43,7 +43,7 @@ import org.hibernate.type.SqlTypes;
 public class SmsLog implements Auditable<Long, String, Long>, Tenantable<String>, SoftDeletable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long createdAt;
