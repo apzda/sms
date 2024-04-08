@@ -45,7 +45,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package -Dskip.container=yes -Djava.version=${{ matrix.java }} --file pom.xml
       - name: Run Application
-        uses: JarvusInnovations/background-action@v1
+        uses: JarvusInnovations/background-action@v1.0.7
         with:
           working-directory: sms-server
           wait-for: 2m

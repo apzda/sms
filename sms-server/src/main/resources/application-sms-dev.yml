@@ -13,36 +13,7 @@ spring:
     password: Abc12332!
   jpa:
     show-sql: true
-    generate-ddl: false
-    hibernate:
-      ddl-auto: validate
-  flyway:
-    baseline-on-migrate: true
-
-apzda:
-  cloud:
-    sms:
-      providers:
-        - id: test
-          name: 测试的供应商
-          templates:
-            login:
-              template-id: "1234"
-              name: 登录验证码
-      props:
-        thread: 2
-      templates:
-        login:
-          interval: 60s
-          timeout: 15m
-          count-d: 1000
-          count-h: 100
-          count-m: 10
 
 logging:
   level:
     com.apzda: debug
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSSXXX} %highlight(%-5level) --- [%15.15t] %cyan(%-40.40logger{39}):%-4L - %msg%n"
-
-
