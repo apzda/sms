@@ -3,6 +3,8 @@ server.port: 8080
 spring:
   application:
     name: sms-service
+  messages:
+    basename: messages-sms
   data:
     redis:
       database: 0
