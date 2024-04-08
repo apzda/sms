@@ -100,6 +100,17 @@ class ValidateControllerTest {
         // System.out.println("body = " + body);
         assertThat(body).isNotNull();
         assertThat(body.getErrCode()).isEqualTo(0);
+
+        // when
+        val count = webClient.get()
+            .uri("/sms/count")
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Response.class)
+            .block();
+        // then
+        assertThat(count).isNotNull();
+        assertThat(count.getData()).isEqualTo(1);
     }
 
 }

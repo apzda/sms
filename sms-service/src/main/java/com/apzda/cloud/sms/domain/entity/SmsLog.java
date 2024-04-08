@@ -16,14 +16,13 @@
  */
 package com.apzda.cloud.sms.domain.entity;
 
-import com.apzda.cloud.gsvc.domain.AuditingEntityListener;
-import com.apzda.cloud.gsvc.model.Auditable;
+import com.apzda.cloud.gsvc.domain.TenantableEntity;
 import com.apzda.cloud.gsvc.model.SoftDeletable;
-import com.apzda.cloud.gsvc.model.Tenantable;
 import com.apzda.cloud.sms.domain.SmsStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 
 /**
@@ -32,15 +31,15 @@ import org.hibernate.type.SqlTypes;
  * @since 1.0.0
  **/
 @Entity
-@Table(name = "apzda_sms_log")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@EntityListeners(AuditingEntityListener.class)
-public class SmsLog implements Auditable<Long, String, Long>, Tenantable<String>, SoftDeletable {
+@Table(name = "apzda_sms_log")
+@SQLRestriction("deleted = false")
+public class SmsLog extends TenantableEntity<Long, String, Long, String> implements SoftDeletable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

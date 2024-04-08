@@ -18,11 +18,9 @@ package com.apzda.cloud.sms.server;
 
 import com.apzda.cloud.sms.config.SmsServiceConfig;
 import com.apzda.cloud.sms.proto.SmsServiceGsvc;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.lang.annotation.*;
 
@@ -35,9 +33,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @PropertySource("classpath:apzda.sms.service.properties")
 @Import({ SmsServiceGsvc.class, SmsServiceConfig.class })
-@ComponentScan(basePackages = { "com.apzda.cloud.sms.facade", "com.apzda.cloud.sms.app", "com.apzda.cloud.sms.domain" })
-@EnableJpaRepositories(basePackages = { "com.apzda.cloud.sms.domain.repository" })
-@EntityScan("com.apzda.cloud.sms.domain.entity")
+@ComponentScan(basePackages = { "com.apzda.cloud.sms.facade", "com.apzda.cloud.sms.domain" })
+// @EnableJpaRepositories(basePackages = { "com.apzda.cloud.sms.domain.repository" })
+// @EntityScan("com.apzda.cloud.sms.domain.entity")
 @Documented
 public @interface EnableSmsServer {
 

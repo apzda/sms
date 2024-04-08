@@ -19,8 +19,11 @@ package com.apzda.cloud.sms.controller;
 import com.apzda.cloud.gsvc.dto.Response;
 import com.apzda.cloud.sms.ISmsData;
 import com.apzda.cloud.sms.aop.ValidateSms;
+import com.apzda.cloud.sms.domain.repository.SmsLogRepository;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,7 +34,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/sms")
 @Slf4j
+@RequiredArgsConstructor
 public class ValidateController {
+
+    private final SmsLogRepository smsLogRepository;
 
     @ValidateSms(tid = "login")
     @GetMapping("/biz")
@@ -43,6 +49,12 @@ public class ValidateController {
     @PostMapping("/bizx")
     public Response<String> validate1(@RequestBody TestRequest testRequest) {
         return Response.success("OK:" + testRequest.getCode());
+    }
+
+    @GetMapping("/count")
+    public Response<Long> count() {
+        val count = smsLogRepository.count();
+        return Response.success(count);
     }
 
     @Data
