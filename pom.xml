@@ -121,7 +121,7 @@
                         <generateReleasePoms>false</generateReleasePoms>
                         <releaseProfiles>release</releaseProfiles>
                         <arguments>-Dmaven.site.skip=true</arguments>
-                        <goals>compile</goals>
+                        <goals>clean,compile</goals>
                     </configuration>
                 </plugin>
                 <!-- nexus-staging-maven-plugin -->
