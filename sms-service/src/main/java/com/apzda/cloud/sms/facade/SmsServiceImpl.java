@@ -20,7 +20,7 @@ import com.apzda.cloud.gsvc.domain.PagerUtils;
 import com.apzda.cloud.gsvc.ext.GsvcExt;
 import com.apzda.cloud.gsvc.infra.Counter;
 import com.apzda.cloud.gsvc.infra.TempStorage;
-import com.apzda.cloud.gsvc.utils.I18nHelper;
+import com.apzda.cloud.gsvc.utils.I18nUtils;
 import com.apzda.cloud.sms.SmsProvider;
 import com.apzda.cloud.sms.SmsSender;
 import com.apzda.cloud.sms.SmsTemplate;
@@ -97,7 +97,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         if (template == null) {
             log.warn("Sms Template({}) is not available", templateId);
             builder.setErrCode(1);
-            builder.setErrMsg(I18nHelper.t("sms.template.not.found", new String[] { templateId }));
+            builder.setErrMsg(I18nUtils.t("sms.template.not.found", new String[] { templateId }));
             return builder.build();
         }
 
@@ -127,7 +127,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             catch (Exception e) {
                 log.warn("Cannot send sms({},{},{}) - {}", phone, templateId, params, e.getMessage());
                 builder.setErrCode(500);
-                builder.setErrMsg(I18nHelper.t("sms.send.failed"));
+                builder.setErrMsg(I18nUtils.t("sms.send.failed"));
                 return builder.build();
             }
         }
@@ -148,7 +148,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         if (template == null) {
             log.warn("Sms Template({}) is not available", templateId);
             builder.setErrCode(3);
-            builder.setErrMsg(I18nHelper.t("sms.template.not.found", new String[] { templateId }));
+            builder.setErrMsg(I18nUtils.t("sms.template.not.found", new String[] { templateId }));
             return builder.build();
         }
 
@@ -162,7 +162,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         }
         else {
             builder.setErrCode(3);
-            builder.setErrMsg(I18nHelper.t("sms.invalid"));
+            builder.setErrMsg(I18nUtils.t("sms.invalid"));
         }
         return builder.build();
     }
@@ -229,7 +229,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             val name = value.name();
             builder.addStatus(com.apzda.cloud.sms.proto.Variable.newBuilder()
                 .setName(name)
-                .setValue(I18nHelper.t("sms.status." + name.toLowerCase(), name)));
+                .setValue(I18nUtils.t("sms.status." + name.toLowerCase(), name)));
         }
         return builder.build();
     }
