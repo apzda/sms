@@ -64,7 +64,7 @@ jobs:
         run: ./ijhttp/ijhttp sms-server/src/test/http/it.http
   deploy:
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [ "it" ]
+    needs: [ "build" ]
     runs-on: ubuntu-22.04
     env:
       MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
