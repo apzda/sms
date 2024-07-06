@@ -28,10 +28,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,8 @@ import java.util.Map;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SmsConfigProperties.class)
+@EnableJpaRepositories("com.apzda.cloud.sms.domain.repository")
+@EntityScan("com.apzda.cloud.sms.domain.entity")
 @RequiredArgsConstructor
 @Getter
 public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
