@@ -16,10 +16,10 @@
  */
 package com.apzda.cloud.sms.autoconfig;
 
-import com.apzda.cloud.sms.proto.SmsServiceGsvc;
+import com.apzda.cloud.gsvc.config.EnableGsvcServices;
+import com.apzda.cloud.sms.proto.SmsService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author fengz (windywany@gmail.com)
@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Import;
  **/
 @AutoConfiguration
 @ComponentScan({ "com.apzda.cloud.sms.aop" })
-@Import({ SmsServiceGsvc.class })
+@EnableGsvcServices({ SmsService.class })
 public class SmsAutoConfiguration {
 
 }
