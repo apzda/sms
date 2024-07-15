@@ -57,6 +57,8 @@ public class ProviderProperties {
 
     private boolean enabled = true;
 
+    private boolean testMode = false;
+
     private final Map<String, TemplateProperties> templates = new HashMap<>();
 
     private final Map<String, String> props = new HashMap<>();

@@ -41,6 +41,8 @@ public class DayuSmsProvider implements SmsProvider {
 
     public static final String DAYU = "dayu";
 
+    private boolean testMode;
+
     private IAcsClient acsClient;
 
     @Override
@@ -50,18 +52,29 @@ public class DayuSmsProvider implements SmsProvider {
 
     @Override
     public void init(ProviderProperties props) throws Exception {
+        if (!props.isEnabled()) {
+            this.testMode = true;
+            return;
+        }
         val accessKey = props.getAccessKey();
         val secretKey = props.getSecretKey();
         val regionId = props.getRegionId();
         Assert.isTrue(StringUtils.isNotBlank(accessKey), "accessKey is blank");
         Assert.isTrue(StringUtils.isNotBlank(secretKey), "secretKey is blank");
         Assert.isTrue(StringUtils.isNotBlank(regionId), "regionId is blank");
+        this.testMode = props.isTestMode();
+        if (this.testMode) {
+            return;
+        }
         IClientProfile profile = DefaultProfile.getProfile(regionId, accessKey, secretKey);
         acsClient = new DefaultAcsClient(profile);
     }
 
     @Override
     public boolean send(Sms sms) throws Exception {
+        if (testMode) {
+            return true;
+        }
         val sendSmsRequest = new SendSmsRequest();
         sendSmsRequest.setPhoneNumbers(sms.getPhone());
         sendSmsRequest.setSignName(sms.getSignName());
@@ -74,8 +87,10 @@ public class DayuSmsProvider implements SmsProvider {
             sendSmsRequest.setTemplateParam(Variable.toJsonStr(variables));
         }
         val sendSmsResponse = acsClient.getAcsResponse(sendSmsRequest);
-        log.debug("Dayu: {Code:" + sendSmsResponse.getCode() + ",Message:" + sendSmsResponse.getMessage()
-                + ",RequestId:" + sendSmsResponse.getRequestId() + ",BizId:" + sendSmsResponse.getBizId() + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("Dayu: {Code:{},Message:{},RequestId:{},BizId:{}}", sendSmsResponse.getCode(),
+                    sendSmsResponse.getMessage(), sendSmsResponse.getRequestId(), sendSmsResponse.getBizId());
+        }
         return "OK".equals(sendSmsResponse.getCode());
     }
 

@@ -97,7 +97,11 @@ public class SmsServiceConfig implements InitializingBean, SmartLifecycle {
         for (SmsProvider provider : smsProviders) {
             val pid = provider.getId();
             if (providerProperties.containsKey(pid)) {
-                provider.init(providerProperties.get(pid));
+                val pp = providerProperties.get(pid);
+                if (properties.isTestMode()) {
+                    pp.setTestMode(true);
+                }
+                provider.init(pp);
                 enabledSmsProviders.put(pid, provider);
             }
 

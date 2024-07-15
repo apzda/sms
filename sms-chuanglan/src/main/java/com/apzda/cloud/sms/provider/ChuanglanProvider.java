@@ -64,6 +64,8 @@ public class ChuanglanProvider implements SmsProvider {
 
     private String passwordMd5;
 
+    private boolean testMode;
+
     private RestClient client;
 
     @Override
@@ -73,6 +75,14 @@ public class ChuanglanProvider implements SmsProvider {
 
     @Override
     public void init(ProviderProperties props) throws Exception {
+        if (!props.isEnabled()) {
+            this.testMode = true;
+            return;
+        }
+        this.testMode = props.isTestMode();
+        if (this.testMode) {
+            return;
+        }
         this.username = props.getUsername();
         Assert.isTrue(StringUtils.isNotBlank(username), "username cannot be blank");
         this.password = props.getPassword();
@@ -92,6 +102,10 @@ public class ChuanglanProvider implements SmsProvider {
 
     @Override
     public boolean send(Sms sms) throws Exception {
+        if (this.testMode) {
+            return true;
+        }
+
         RestClient.RequestBodySpec requestBodySpec;
         if (!CollectionUtils.isEmpty(sms.getVariables())) {
             val variables = new ArrayList<>(sms.getVariables());

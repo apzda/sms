@@ -44,6 +44,11 @@ public class SmsConfigProperties {
     private String sender = "default";
 
     /**
+     * 测试模式
+     */
+    private boolean testMode = false;
+
+    /**
      * 短信服务商
      */
     private String defaultProvider;
