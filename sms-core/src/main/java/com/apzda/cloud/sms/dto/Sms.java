@@ -84,6 +84,8 @@ public class Sms {
 
     private String original;
 
+    private boolean testMode;
+
     public int getIntervals() {
         return Math.max(30, intervals);
     }

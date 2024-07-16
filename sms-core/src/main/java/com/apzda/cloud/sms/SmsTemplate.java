@@ -111,6 +111,9 @@ public class SmsTemplate {
     }
 
     public boolean verify(Sms sms, TempStorage storage) {
+        if (sms.isTestMode()) {
+            return true;
+        }
         val phone = sms.getPhone();
         val id = genId(phone);
         val info = storage.load(id, SmsInfo.class);

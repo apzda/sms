@@ -43,13 +43,13 @@ public class TemplateProperties {
      * 发送间隔
      */
     @DurationUnit(ChronoUnit.SECONDS)
-    private Duration interval;
+    private Duration interval = Duration.ofSeconds(60);
 
     /**
      * 有效期
      */
     @DurationUnit(ChronoUnit.MINUTES)
-    private Duration timeout;
+    private Duration timeout = Duration.ofMinutes(30);
 
     private Integer countM;
 

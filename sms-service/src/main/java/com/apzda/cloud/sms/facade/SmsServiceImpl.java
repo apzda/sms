@@ -25,6 +25,7 @@ import com.apzda.cloud.sms.SmsProvider;
 import com.apzda.cloud.sms.SmsSender;
 import com.apzda.cloud.sms.SmsTemplate;
 import com.apzda.cloud.sms.config.ProviderProperties;
+import com.apzda.cloud.sms.config.SmsConfigProperties;
 import com.apzda.cloud.sms.config.SmsServiceConfig;
 import com.apzda.cloud.sms.config.TemplateProperties;
 import com.apzda.cloud.sms.domain.SmsStatus;
@@ -69,6 +70,8 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
     private final TempStorage storage;
 
     private final Counter counter;
+
+    private final SmsConfigProperties smsConfigProperties;
 
     private SmsSender smsSender;
 
@@ -157,6 +160,8 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
             .toList();
 
         val sms = template.create(phone, params);
+        sms.setTestMode(smsConfigProperties.isTestMode());
+
         if (template.verify(sms, storage)) {
             builder.setErrCode(0);
         }
