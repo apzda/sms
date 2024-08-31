@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>sms</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Apzda SMS</name>
     <description>Apzda Official SMS module</description>
@@ -57,7 +57,7 @@
         <url>https://github.com/apzda/sms.git</url>
         <connection>scm:git@github.com:apzda/sms.git</connection>
         <developerConnection>scm:git:git@github.com:apzda/sms.git</developerConnection>
-        <tag>v1.0.7</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
@@ -78,32 +78,32 @@
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-core</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-proto</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-client</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-dayu</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-chuanglan</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.apzda.cloud</groupId>
                 <artifactId>sms-service</artifactId>
-                <version>1.0.7</version>
+                <version>1.0.8-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
